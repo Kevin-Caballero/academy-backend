@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Servicio de MariaDB
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb_container
+    restart: always
+    environment:
+      # Configuración de la base de datos (cambia estas variables según tus necesidades)
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    # Configuración de salud
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# Volúmenes persistentes
+volumes:
+  mariadb_data:
+    driver: local 

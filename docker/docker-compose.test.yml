@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Servicio de MariaDB para tests
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb_container_test
+    restart: always
+    environment:
+      # Configuración de la base de datos para tests
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase_test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306" # Puerto diferente para evitar conflictos con el de desarrollo
+    volumes:
+      - mariadb_test_data:/var/lib/mysql
+    # Configuración de salud
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# Volúmenes persistentes
+volumes:
+  mariadb_test_data:
+    driver: local 
